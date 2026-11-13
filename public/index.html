@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catmas ($CATMAS) — Every stray deserves a Christmas dinner</title>
+<meta name="description" content="Catmas feeds street cats every day, gives each one a name and a number, and films it. Make a free official Cat ID for your own cat.">
+<meta property="og:title" content="Catmas — Every stray deserves a Christmas dinner">
+<meta property="og:description" content="We feed street cats, name and number every one. Get a free official Cat ID for your cat.">
+<meta property="og:image" content="/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,600&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   CATMAS — website
+   Edit public/config.js to put in your real CA, links, numbers,
+   photos and ASMR videos.
+   ========================================================= */
+:root{
+  --night:#0d1726; --night-2:#14233a; --pine:#0f3d2e; --pine-2:#16543f;
+  --red:#c8332b; --red-2:#e0483f; --gold:#e8b04a; --gold-2:#f6d27e;
+  --cream:#fbf3e4; --cream-2:#f3e6cc; --ink:#1d1a16; --muted:#a9b4c4;
+  --radius:18px;
+  --display:"Fraunces", Georgia, serif; --body:"DM Sans", system-ui, sans-serif; --mono:"JetBrains Mono", ui-monospace, monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--night);color:var(--cream);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,video,canvas{max-width:100%;display:block}
+a{color:inherit}
+button,input,select{font:inherit}
+.wrap{width:min(1160px,92vw);margin:0 auto}
+#snow{position:fixed;inset:0;pointer-events:none;z-index:0}
+main,header,footer{position:relative;z-index:1}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:rgba(13,23,38,.72);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:900;font-size:22px;text-decoration:none;letter-spacing:-.01em}
+.brand svg{width:34px;height:34px}
+.nav-links{display:flex;gap:4px;margin-left:auto;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.nav-links a{padding:8px 12px;border-radius:999px;text-decoration:none;font-size:14px;color:var(--muted);white-space:nowrap}
+.nav-links a:hover{color:var(--cream);background:rgba(255,255,255,.06)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:13px 22px;font-weight:700;cursor:pointer;text-decoration:none;transition:transform .15s ease, box-shadow .15s ease, background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 8px 24px -8px rgba(200,51,43,.7)}
+.btn-red:hover{background:var(--red-2)}
+.btn-gold{background:var(--gold);color:var(--ink)}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--cream);border:1px solid rgba(255,255,255,.14)}
+.btn[disabled]{opacity:.55;cursor:not-allowed;transform:none}
+.btn-sm{padding:9px 16px;font-size:14px}
+
+/* HERO */
+.hero{padding:72px 0 40px}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-2)}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--red-2);box-shadow:0 0 0 4px rgba(224,72,63,.25)}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(48px,7.4vw,96px);line-height:.95;letter-spacing:-.03em;margin:18px 0 18px}
+h1 em{font-style:italic;font-weight:600;color:var(--gold)}
+.lede{font-size:clamp(17px,1.7vw,20px);color:#d8dee8;max-width:34ch}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 22px}
+.ca-box{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px dashed rgba(232,176,74,.5);border-radius:14px;padding:12px 14px;max-width:560px}
+.ca-box .lab{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gold-2);text-transform:uppercase;white-space:nowrap}
+.ca-box code{font-family:var(--mono);font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.ca-warn{font-size:13px;color:var(--muted);margin-top:8px;max-width:560px}
+.hero-art{position:relative}
+.hero-card{position:relative;border-radius:28px;overflow:hidden;aspect-ratio:4/5;background:radial-gradient(120% 80% at 50% 0%, #22406a 0%, #101c2e 70%);box-shadow:0 40px 80px -30px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.08)}
+.hero-card img{width:100%;height:100%;object-fit:cover}
+.hero-tag{position:absolute;left:16px;bottom:16px;right:16px;display:flex;justify-content:space-between;align-items:end;gap:10px;background:rgba(13,23,38,.75);backdrop-filter:blur(8px);border-radius:16px;padding:12px 14px}
+.hero-tag b{font-family:var(--display);font-size:22px}
+.hero-tag small{display:block;color:var(--muted);font-size:12px}
+.hero-tag .id{font-family:var(--mono);font-size:12px;color:var(--gold-2)}
+.float-badge{position:absolute;z-index:3;top:-14px;right:-10px;background:var(--red);color:#fff;font-weight:700;font-size:13px;padding:8px 14px;border-radius:999px;transform:rotate(6deg);box-shadow:0 10px 20px -8px rgba(0,0,0,.6)}
+
+/* COUNTDOWN + METER */
+.strip{padding:10px 0 30px}
+.meter{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:20px}
+.stat .k{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stat .v{font-family:var(--display);font-weight:900;font-size:clamp(30px,3.6vw,44px);line-height:1.05;margin-top:6px}
+.stat .s{font-size:13px;color:var(--muted);margin-top:4px}
+.stat.hl{background:linear-gradient(160deg,var(--red),#8f1f19);border-color:transparent}
+.stat.hl .k,.stat.hl .s{color:#ffd9d5}
+
+/* SECTIONS */
+section{padding:84px 0}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:34px;flex-wrap:wrap}
+h2{font-family:var(--display);font-weight:900;font-size:clamp(34px,4.6vw,56px);line-height:1;letter-spacing:-.02em;margin:10px 0 0}
+h2 em{font-style:italic;font-weight:600;color:var(--gold)}
+.sec-sub{color:#cfd6e2;max-width:46ch;margin:0}
+.light{background:var(--cream);color:var(--ink)}
+.light .sec-sub{color:#5b544a}
+.light .eyebrow{color:var(--red)}
+.pine{background:radial-gradient(100% 60% at 50% 0%, var(--pine-2), var(--pine))}
+
+/* ADVENT */
+.advent{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.door{position:relative;aspect-ratio:1;border-radius:16px;border:0;cursor:pointer;overflow:hidden;color:var(--cream);background:linear-gradient(145deg,#1d3a5c,#132741);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);transition:transform .15s}
+.door:hover{transform:translateY(-2px)}
+.door .n{position:absolute;top:10px;left:12px;font-family:var(--display);font-weight:900;font-size:clamp(22px,3vw,34px)}
+.door .st{position:absolute;bottom:10px;left:12px;right:12px;font-size:12px;color:var(--muted);text-align:left}
+.door.open{background:#000}
+.door.open img{width:100%;height:100%;object-fit:cover;opacity:.85}
+.door.open .n{text-shadow:0 2px 10px rgba(0,0,0,.8)}
+.door.open .st{color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.9)}
+.door.today{box-shadow:inset 0 0 0 3px var(--gold), 0 0 30px -6px var(--gold)}
+.door.locked{cursor:default}
+.door.locked:hover{transform:none}
+.door.big{grid-column:span 2;grid-row:span 2;background:linear-gradient(145deg,var(--red),#7d1813)}
+.door svg.lock{position:absolute;right:12px;top:12px;width:18px;height:18px;opacity:.45}
+
+/* ASMR */
+.asmr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.vcard{background:#0b1320;border-radius:var(--radius);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.vbox{position:relative;aspect-ratio:9/16;background:#000}
+.vbox video,.vbox img{width:100%;height:100%;object-fit:cover}
+.vplay{position:absolute;inset:0;display:grid;place-items:center;border:0;background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(0,0,0,.6));cursor:pointer;color:#fff}
+.vplay span{width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center}
+.vplay svg{width:26px;height:26px;margin-left:4px}
+.vbadge{position:absolute;top:12px;left:12px;display:flex;gap:6px;align-items:center;background:rgba(0,0,0,.6);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.vbadge svg{width:14px;height:14px}
+.vmeta{padding:14px 16px}
+.vmeta b{font-family:var(--display);font-size:19px}
+.vmeta small{display:block;color:var(--muted)}
+.asmr-note{display:flex;gap:10px;align-items:center;margin-top:18px;color:var(--muted);font-size:14px}
+
+/* CATDEX */
+.dex-tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
+.tabs{display:inline-flex;background:var(--cream-2);border-radius:999px;padding:4px}
+.tabs button{border:0;background:transparent;padding:9px 16px;border-radius:999px;font-weight:700;cursor:pointer;color:#6b6152}
+.tabs button.on{background:var(--ink);color:var(--cream)}
+.search{flex:1;min-width:200px;max-width:340px;border:1px solid #e1d3b8;background:#fff;border-radius:999px;padding:10px 16px;color:var(--ink)}
+.dex{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.dcard{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 0 #e9dcc2, 0 14px 30px -18px rgba(70,50,20,.35);transition:transform .15s}
+.dcard:hover{transform:translateY(-3px) rotate(-.4deg)}
+.dcard .ph{aspect-ratio:4/5;background:#efe3cb}
+.dcard .ph img{width:100%;height:100%;object-fit:cover}
+.dcard .bd{padding:12px 14px 14px}
+.dcard .no{font-family:var(--mono);font-size:12px;color:var(--red);font-weight:700}
+.dcard .nm{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.1;margin:2px 0}
+.dcard .ct{font-size:13px;color:#7a7062}
+.dcard .tg{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#f5ead4;color:#8a6a2c;padding:4px 8px;border-radius:999px}
+.empty{grid-column:1/-1;text-align:center;padding:40px;border:2px dashed #e1d3b8;border-radius:16px;color:#7a7062}
+.demo-note{font-size:13px;color:#8a7f70;margin-top:14px}
+
+/* CAT ID GENERATOR */
+.gen{display:grid;grid-template-columns:380px 1fr;gap:28px;align-items:start}
+.panel{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:22px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:#e6ecf4}
+.field input[type=text],.field select{width:100%;background:#0b1422;border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:12px;padding:12px 14px;outline:none}
+.field input[type=text]:focus,.field select:focus{border-color:var(--gold)}
+.drop{display:grid;place-items:center;text-align:center;gap:6px;border:2px dashed rgba(232,176,74,.55);border-radius:16px;padding:22px 14px;cursor:pointer;background:rgba(232,176,74,.06);transition:background .15s}
+.drop:hover,.drop.over{background:rgba(232,176,74,.14)}
+.drop svg{width:30px;height:30px;color:var(--gold)}
+.drop small{color:var(--muted)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toggle{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-weight:700;font-size:14px}
+.toggle input{width:18px;height:18px;accent-color:var(--red)}
+.sliders{display:grid;gap:8px;margin-top:10px}
+.sliders label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:500;margin:0}
+.sliders input{width:100%;accent-color:var(--gold)}
+.hint{font-size:12px;color:var(--muted);margin-top:6px}
+.preview{position:sticky;top:84px}
+.canvas-wrap{border-radius:22px;overflow:hidden;box-shadow:0 30px 70px -30px rgba(0,0,0,.8);background:#000;touch-action:none}
+#card{width:100%;height:auto;cursor:grab}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.status{margin-top:12px;font-size:14px;color:var(--gold-2);min-height:22px}
+.status.err{color:#ff9d96}
+.share-tip{font-size:13px;color:var(--muted);margin-top:6px}
+
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;counter-reset:s}
+.step{background:#fff;border-radius:18px;padding:20px;position:relative;box-shadow:0 1px 0 #e9dcc2}
+.step::before{counter-increment:s;content:counter(s);font-family:var(--display);font-weight:900;font-size:44px;color:var(--red);line-height:1}
+.step h3{font-family:var(--display);font-size:20px;margin:8px 0 6px;line-height:1.15}
+.step p{margin:0;font-size:14px;color:#5b544a}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+.box{background:#fff;border-radius:18px;padding:22px;box-shadow:0 1px 0 #e9dcc2}
+.box h3{font-family:var(--display);margin:0 0 8px;font-size:22px}
+.box p,.box li{font-size:15px;color:#4a443b}
+.bar{height:14px;border-radius:999px;background:#f0e2c6;overflow:hidden;display:flex;margin:12px 0 8px}
+.bar i{display:block;height:100%}
+
+/* RECEIPTS */
+.receipts{display:grid;gap:12px}
+.rc{display:grid;grid-template-columns:130px 1fr auto;gap:16px;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px 18px}
+.rc .d{font-family:var(--mono);font-size:13px;color:var(--gold-2)}
+.rc b{font-family:var(--display);font-size:18px}
+.rc small{display:block;color:var(--muted)}
+
+/* ROADMAP */
+.road{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;margin-top:10px}
+.road::before{content:"";position:absolute;left:4%;right:4%;top:22px;height:3px;background:repeating-linear-gradient(90deg,var(--gold) 0 14px,transparent 14px 24px)}
+.mile{text-align:center;padding:0 8px;position:relative}
+.mile .pin{width:46px;height:46px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:var(--night-2);border:3px solid var(--gold);font-weight:900;font-family:var(--display)}
+.mile.done .pin{background:var(--gold);color:var(--ink)}
+.mile b{font-family:var(--display);font-size:18px;display:block}
+.mile small{color:#d6e3db;font-size:13px}
+
+/* FAQ */
+.faq{display:grid;gap:10px;max-width:860px}
+details{background:#fff;border-radius:16px;padding:16px 20px;box-shadow:0 1px 0 #e9dcc2}
+summary{cursor:pointer;font-weight:700;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:10px}
+summary::after{content:"+";font-family:var(--display);font-size:24px;line-height:1;color:var(--red)}
+details[open] summary::after{content:"–"}
+details p{margin:10px 0 0;color:#4a443b}
+.warn{display:flex;gap:16px;align-items:center;background:#fff4e0;border:2px solid var(--gold);border-radius:18px;padding:18px 20px;margin-top:26px;color:var(--ink)}
+.warn svg{width:34px;height:34px;flex:none;color:var(--red)}
+
+footer{padding:50px 0 60px;border-top:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{color:var(--cream)}
+
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:50;display:none;place-items:center;background:rgba(5,10,18,.78);backdrop-filter:blur(6px);padding:20px}
+.modal.on{display:grid}
+.modal .in{background:var(--night-2);border:1px solid rgba(255,255,255,.12);border-radius:24px;max-width:720px;width:100%;max-height:90vh;overflow:auto;padding:22px;position:relative}
+.modal .x{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;font-size:20px;cursor:pointer}
+.modal h3{font-family:var(--display);font-size:28px;margin:0 0 6px}
+.modal img{border-radius:16px;margin:12px 0}
+
+@media (max-width:980px){
+  .hero .wrap{grid-template-columns:1fr}
+  .hero-art{max-width:420px}
+  .meter{grid-template-columns:repeat(2,1fr)}
+  .asmr-grid{grid-template-columns:repeat(2,1fr)}
+  .dex{grid-template-columns:repeat(3,1fr)}
+  .gen{grid-template-columns:1fr}
+  .preview{position:static}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .road{grid-template-columns:1fr;gap:18px}
+  .road::before{display:none}
+  .split{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  .nav-links{display:none}
+  .advent{grid-template-columns:repeat(4,1fr)}
+  .door.big{grid-column:span 2;grid-row:span 1;aspect-ratio:auto}
+  .asmr-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .dex{grid-template-columns:repeat(2,1fr);gap:10px}
+  .steps{grid-template-columns:1fr}
+  .rc{grid-template-columns:1fr}
+  section{padding:64px 0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<canvas id="snow" aria-hidden="true"></canvas>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Catmas home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 18 L11 8 L16 14 Z M32 18 L29 8 L24 14 Z" fill="#f08a3c"/><ellipse cx="20" cy="24" rx="13" ry="12" fill="#f08a3c"/><ellipse cx="20" cy="28" rx="8" ry="6.5" fill="#fbf3e4"/><circle cx="15" cy="22" r="1.8" fill="#1d1a16"/><circle cx="25" cy="22" r="1.8" fill="#1d1a16"/><path d="M18.5 26 h3 l-1.5 1.6z" fill="#c8332b"/><path d="M7 15 Q12 1 27 2 Q34 3 35 9 Q31 7 29 10 L31 15 Z" fill="#c8332b"/><rect x="5" y="13.5" width="28" height="5" rx="2.5" fill="#fbf3e4"/><circle cx="35" cy="9" r="3" fill="#fbf3e4"/></svg>
+      Catmas
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#catmas">Catmas</a><a href="#asmr">ASMR</a><a href="#catdex">Catdex</a><a href="#cat-id">Cat ID</a><a href="#how">How it works</a><a href="#receipts">Receipts</a><a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-red btn-sm" href="#cat-id">Get a Cat ID</a>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow"><span class="dot"></span><span id="heroEyebrow">Catmas · Dec 1 – 25</span></span>
+        <h1>Merry <em>Catmas.</em><br>Feed a stray.</h1>
+        <p class="lede">Every stray deserves a Christmas dinner. We feed street cats every day, give each one a name and a number, and film it — crunch by crunch.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-red" href="#cat-id">Make your cat's ID card</a>
+          <a class="btn btn-ghost" id="buyBtn" href="#faq">Token launching soon</a>
+        </div>
+        <div class="ca-box">
+          <span class="lab">CA</span>
+          <code id="caText">No token yet</code>
+          <button class="btn btn-gold btn-sm" id="copyCa" hidden>Copy</button>
+        </div>
+        <p class="ca-warn" id="caWarn">Catmas has not launched a token. Anything you see is fake until we post the contract address here and on our pinned X post.</p>
+      </div>
+      <div class="hero-art">
+        <span class="float-badge" id="countBadge">Catmas in …</span>
+        <div class="hero-card">
+          <img id="heroImg" alt="The face of Catmas wearing a Santa hat">
+          <div class="hero-tag">
+            <div><small>The face of Catmas</small><b id="heroName">Biscuit</b></div>
+            <span class="id" id="heroId">CATMAS-0001 · The Fish Market</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- METER -->
+  <div class="strip">
+    <div class="wrap meter" aria-label="Catmas Meter">
+      <div class="stat hl"><div class="k">Meals served</div><div class="v" id="mMeals">0</div><div class="s">Bowls filled, on camera</div></div>
+      <div class="stat"><div class="k">Cats in the Catdex</div><div class="v" id="mCats">0</div><div class="s">Named &amp; numbered by us</div></div>
+      <div class="stat"><div class="k">Community Cat IDs</div><div class="v" id="mIds">0</div><div class="s" id="mIdsSub">Made by people like you</div></div>
+      <div class="stat"><div class="k">Sent to US shelters</div><div class="v" id="mSol">0 SOL</div><div class="s">Via Donate.gg, on-chain</div></div>
+    </div>
+  </div>
+
+  <!-- CATMAS ADVENT -->
+  <section id="catmas" class="pine">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">25 Days of Catmas</span><h2>One cat behind <em>every door.</em></h2></div>
+        <p class="sec-sub">A new street cat every day from December 1. Each door opens on its date with that day's star, their story and their first Christmas dinner. Christmas Eve is the big feast.</p>
+      </div>
+      <div class="advent" id="advent"></div>
+    </div>
+  </section>
+
+  <!-- ASMR -->
+  <section id="asmr">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Crunch, crunch, purr</span><h2>Stray cat <em>ASMR.</em></h2></div>
+        <p class="sec-sub">Recorded with a wireless mic placed next to the bowl. No music, no voice-over — just a hungry cat finally getting dinner. Headphones on.</p>
+      </div>
+      <div class="asmr-grid" id="asmrGrid"></div>
+      <p class="asmr-note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="2" y="14" width="5" height="7" rx="2"/><rect x="17" y="14" width="5" height="7" rx="2"/></svg>Best with headphones. New ASMR drop every day of Catmas.</p>
+    </div>
+  </section>
+
+  <!-- CATDEX -->
+  <section id="catdex" class="light">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">The Catdex</span><h2>Every cat gets a <em>name.</em></h2></div>
+        <p class="sec-sub">Street cats we feed get a CATMAS number. Cats from the community get a CM number when someone makes their Cat ID below.</p>
+      </div>
+      <div class="dex-tools">
+        <div class="tabs" role="tablist">
+          <button class="on" data-tab="fed" role="tab">Fed by Catmas</button>
+          <button data-tab="community" role="tab">Community cats</button>
+        </div>
+        <input class="search" id="dexSearch" type="search" placeholder="Search a name or city…" aria-label="Search the Catdex">
+      </div>
+      <div class="dex" id="dex"></div>
+      <p class="demo-note" id="dexNote"></p>
+    </div>
+  </section>
+
+  <!-- CAT ID GENERATOR -->
+  <section id="cat-id">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Free · takes 30 seconds</span><h2>Give your cat an <em>official ID.</em></h2></div>
+        <p class="sec-sub">Upload a photo, type a name and a city. Your cat gets the next number in the Catmas registry and a card you can post on X. Santa hat optional (and digital, so no cat was bothered).</p>
+      </div>
+      <div class="gen">
+        <form class="panel" id="genForm" autocomplete="off">
+          <div class="field">
+            <label for="photo">Photo</label>
+            <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload a cat photo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16l4-4 4 4 3-3 5 5"/><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="9" r="1.6"/></svg>
+              <b>Drop a photo or tap to choose</b>
+              <small>JPG or PNG · face clearly visible</small>
+            </div>
+            <input type="file" id="photo" accept="image/*" hidden>
+          </div>
+          <div class="field"><label for="catName">Cat's name</label><input type="text" id="catName" maxlength="22" placeholder="e.g. Mochi"></div>
+          <div class="row2">
+            <div class="field"><label for="catCity">City</label><input type="text" id="catCity" maxlength="24" placeholder="e.g. Austin"></div>
+            <div class="field"><label for="catType">Class</label>
+              <select id="catType">
+                <option value="Street">Street cat</option>
+                <option value="Community">Community cat</option>
+                <option value="House">House cat</option>
+                <option value="Rescue">Rescued cat</option>
+              </select></div>
+          </div>
+          <div class="field"><label for="guardian">Your X handle <span style="color:var(--muted);font-weight:500">(optional)</span></label><input type="text" id="guardian" maxlength="20" placeholder="@yourhandle"></div>
+          <div class="field">
+            <label class="toggle"><input type="checkbox" id="hatOn" checked> Add a Santa hat</label>
+            <div class="sliders" id="hatControls">
+              <label>Hat size <span id="hsV"></span></label><input type="range" id="hatSize" min="40" max="200" value="100">
+              <label>Tilt <span id="htV"></span></label><input type="range" id="hatTilt" min="-40" max="40" value="-12">
+              <p class="hint">Drag the hat on the card to place it on your cat's head.</p>
+            </div>
+          </div>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+          <button class="btn btn-red" type="submit" id="genBtn" style="width:100%">Register &amp; get my number</button>
+          <p class="hint" id="modeNote"></p>
+        </form>
+        <div class="preview">
+          <div class="canvas-wrap"><canvas id="card" width="1200" height="760" aria-label="Cat ID card preview"></canvas></div>
+          <div class="actions" id="cardActions" hidden>
+            <button class="btn btn-gold" id="dlBtn">Download card</button>
+            <a class="btn btn-red" id="xBtn" href="#" target="_blank" rel="noopener">Share on X</a>
+            <button class="btn btn-ghost" id="copyTxt">Copy post text</button>
+            <button class="btn btn-ghost" id="newBtn">Make another</button>
+          </div>
+          <div class="status" id="status" role="status"></div>
+          <p class="share-tip" id="shareTip" hidden>Tip: X can't attach the image automatically. Download the card first, then add it to your post.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="light">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Proof, not promises</span><h2>Where the money <em>goes.</em></h2></div>
+        <p class="sec-sub">Every buy and sell of $CATMAS on pump.fun creates a small creator fee. That fee — not your purchase — is what feeds the cats.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><h3>You trade $CATMAS</h3><p>On the pump.fun bonding curve, 0.3% of each trade becomes a creator fee.</p></div>
+        <div class="step"><h3>Fees split</h3><p>Most goes to our public mission wallet; part goes to a US animal shelter via Donate.gg.</p></div>
+        <div class="step"><h3>Monday cash-out</h3><p>Each week we withdraw, convert to local currency and post the transaction link.</p></div>
+        <div class="step"><h3>We buy food</h3><p>Proper cat food, vitamins and vet care. Every receipt gets photographed.</p></div>
+        <div class="step"><h3>Cats eat, on camera</h3><p>Each cat is filmed, named, numbered and added to the Catdex.</p></div>
+      </div>
+      <div class="split">
+        <div class="box">
+          <h3>The fee split</h3>
+          <div class="bar" aria-hidden="true"><i id="barA" style="background:var(--red)"></i><i id="barB" style="background:var(--gold)"></i></div>
+          <p><b style="color:var(--red)" id="splitA">70%</b> mission wallet — feeding street cats &nbsp;·&nbsp; <b style="color:#a77a1f" id="splitB">30%</b> US animal shelter via Donate.gg</p>
+        </div>
+        <div class="box">
+          <h3>The honest math</h3>
+          <p>Creator fee ≈ 0.3% of trading volume. So <b>$1M</b> traded ≈ <b>$3,000</b> in fees ≈ <b id="mathMeals">13,000+</b> meals for street cats. We publish every number, every week.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECEIPTS -->
+  <section id="receipts">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Every Monday</span><h2>The <em>receipts.</em></h2></div>
+        <p class="sec-sub">On-chain withdrawal, exchange rate, shop receipt and the feeding video — all in one place, every week.</p>
+      </div>
+      <div class="receipts" id="receiptList"></div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="pine">
+    <div class="wrap">
+      <div class="sec-head"><div><span class="eyebrow">Roadmap</span><h2>From one bowl to a <em>Christmas feast.</em></h2></div></div>
+      <div class="road" id="road"></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="light">
+    <div class="wrap">
+      <div class="sec-head"><div><span class="eyebrow">Questions</span><h2>Good <em>questions.</em></h2></div></div>
+      <div class="faq">
+        <details><summary>Do you really put Santa hats on street cats?</summary><p>Only on a few tame community cats that already know us, for a few seconds, never held down. Most cats just get a tiny hat placed next to their bowl. The hats on Cat ID cards are digital.</p></details>
+        <details><summary>Is $CATMAS an investment?</summary><p>No. $CATMAS is a memecoin with no intrinsic value and no promise of returns. Crypto is volatile — only spend what you're fine losing. The cats get fed from creator fees, not from your purchase.</p></details>
+        <details><summary>How do I know the money reaches the cats?</summary><p>Every Monday we post the on-chain withdrawal, the exchange rate, the shop receipts and dated feeding videos. The US share goes through pump.fun's Charity Coins with Donate.gg, which is verifiable on-chain.</p></details>
+        <details><summary>Is my Cat ID number really unique?</summary><p>Yes. Each registered card takes the next number in the Catmas registry, so no two cats share one.</p></details>
+        <details><summary>Do you also fix (sterilize) the cats?</summary><p>Feeding without sterilizing grows the stray population, so every 1,000 meals unlocks a sterilization round with a local vet partner.</p></details>
+      </div>
+      <div class="warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><div><b>Beware of fake tokens.</b> The only real contract address is shown at the top of this page and on our pinned X post. Copycats will use our photos and name.</div></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b style="color:var(--cream);font-family:var(--display);font-size:18px">Catmas ($CATMAS)</b><br>Feeding street cats, one Santa hat at a time.</div>
+    <div id="footLinks"></div>
+    <div style="max-width:420px">$CATMAS is a memecoin with no intrinsic value or expectation of financial return. Not an investment. Not affiliated with pump.fun or Donate.gg.</div>
+  </div>
+</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true"><div class="in"><button class="x" id="mClose" aria-label="Close">×</button><div id="mBody"></div></div></div>
+
+<script src="config.js"></script>
+<script>
+/* =========================================================
+   CONFIG — edit this block. Everything else reads from it.
+   ========================================================= */
+const CONFIG = window.CATMAS_CONFIG || {};
+CONFIG.siteUrl = CONFIG.siteUrl || location.origin;
+
+/* =========================================================
+   Helpers
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const fmt = n => new Intl.NumberFormat("en-US").format(Math.round(n));
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = (n, w) => String(n).padStart(w, "0");
+
+/* Illustrated placeholder cat with a Santa hat (original art, used until real photos are added) */
+function catArt(color = "#f08a3c", seed = 1, hat = true) {
+  const light = ["#f4efe6","#e9c27a","#d9d2c7"].includes(color);
+  const stroke = light ? "#3a332b" : "#1d1a16";
+  const bg = ["#1b3354","#14402f","#3a1d2a","#2a2350"][seed % 4];
+  const s = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+<defs><radialGradient id="g" cx="50%" cy="35%" r="75%"><stop offset="0" stop-color="${bg}" stop-opacity="1"/><stop offset="1" stop-color="#0b1320"/></radialGradient></defs>
+<rect width="400" height="500" fill="url(#g)"/>
+${[...Array(14)].map((_,i)=>`<circle cx="${(i*67+seed*31)%400}" cy="${(i*41+seed*53)%300}" r="${(i%3)+2}" fill="#f6d27e" opacity="${0.25+(i%4)*0.12}"/>`).join("")}
+<ellipse cx="200" cy="470" rx="150" ry="40" fill="#000" opacity=".25"/>
+<path d="M95 300 Q90 470 200 470 Q310 470 305 300 Z" fill="${color}"/>
+<path d="M118 215 L132 120 L185 180 Z" fill="${color}" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+<path d="M282 215 L268 120 L215 180 Z" fill="${color}" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>
+<path d="M130 200 L136 145 L168 182 Z" fill="#f2a7a0" opacity=".8"/>
+<path d="M270 200 L264 145 L232 182 Z" fill="#f2a7a0" opacity=".8"/>
+<ellipse cx="200" cy="255" rx="105" ry="92" fill="${color}" stroke="${stroke}" stroke-width="3"/>
+<ellipse cx="200" cy="292" rx="52" ry="38" fill="#fbf3e4" opacity="${light?0.0:0.9}"/>
+<ellipse cx="160" cy="245" rx="15" ry="${seed%2?17:6}" fill="${stroke}"/>
+<ellipse cx="240" cy="245" rx="15" ry="${seed%2?17:6}" fill="${stroke}"/>
+${seed%2?`<circle cx="165" cy="239" r="5" fill="#fff"/><circle cx="245" cy="239" r="5" fill="#fff"/>`:""}
+<path d="M190 278 h20 l-10 11 z" fill="#c8332b"/>
+<path d="M200 289 q-10 14 -22 6 M200 289 q10 14 22 6" fill="none" stroke="${stroke}" stroke-width="3" stroke-linecap="round"/>
+<path d="M120 280 h-48 M122 292 l-44 10 M280 280 h48 M278 292 l44 10" stroke="${stroke}" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+${hat?`<g transform="rotate(-14 200 160)"><path d="M120 178 Q150 70 250 60 Q300 58 318 110 Q285 92 262 120 L282 178 Z" fill="#c8332b"/><path d="M150 120 Q190 80 250 75" stroke="#e0483f" stroke-width="10" fill="none" opacity=".6"/><rect x="104" y="165" width="196" height="34" rx="17" fill="#fbf3e4"/><circle cx="320" cy="114" r="22" fill="#fbf3e4"/></g>`:""}
+</svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s);
+}
+
+/* =========================================================
+   Snow
+   ========================================================= */
+(() => {
+  const c = $("#snow"), x = c.getContext("2d");
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let W, H, flakes = [];
+  const resize = () => { W = c.width = innerWidth; H = c.height = innerHeight; flakes = [...Array(Math.min(120, Math.round(W / 12)))].map(() => ({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*2+0.6, s: Math.random()*0.6+0.25, d: Math.random()*1.2 })); };
+  resize(); addEventListener("resize", resize);
+  (function tick(){ x.clearRect(0,0,W,H); x.fillStyle="rgba(255,255,255,.75)";
+    for (const f of flakes){ f.y += f.s; f.x += Math.sin(f.y/50 + f.d)*0.3; if (f.y > H) { f.y = -5; f.x = Math.random()*W; } x.beginPath(); x.arc(f.x,f.y,f.r,0,Math.PI*2); x.fill(); }
+    requestAnimationFrame(tick); })();
+})();
+
+/* =========================================================
+   Hero, CA, countdown, meter
+   ========================================================= */
+$("#heroImg").src = CONFIG.hero.photo || catArt(CONFIG.fedCats[0].color, 1);
+$("#heroName").textContent = CONFIG.hero.name;
+$("#heroId").textContent = `${CONFIG.hero.id} · ${CONFIG.hero.city}`;
+if (CONFIG.ca) {
+  $("#caText").textContent = CONFIG.ca;
+  $("#copyCa").hidden = false;
+  $("#caWarn").textContent = "This is the only official contract address. Always check it matches our pinned X post.";
+  const b = $("#buyBtn"); b.textContent = "Buy $CATMAS on pump.fun"; b.href = CONFIG.pumpUrl || ("https://pump.fun/coin/" + CONFIG.ca); b.target = "_blank"; b.rel = "noopener"; b.classList.replace("btn-ghost","btn-gold");
+}
+$("#copyCa").addEventListener("click", async () => { try { await navigator.clipboard.writeText(CONFIG.ca); $("#copyCa").textContent = "Copied"; } catch { $("#copyCa").textContent = "Select & copy"; } setTimeout(()=>$("#copyCa").textContent="Copy",1600); });
+
+function countdown() {
+  const now = Date.now(), launch = Date.parse(CONFIG.launchAt), eve = Date.parse(`${CONFIG.catmasYear}-12-24T12:00:00Z`);
+  const fmtLeft = ms => { const d = Math.floor(ms/864e5), h = Math.floor(ms%864e5/36e5), m = Math.floor(ms%36e5/6e4); return d>0 ? `${d}d ${h}h` : `${h}h ${m}m`; };
+  let t;
+  if (now < launch) t = `Catmas starts in ${fmtLeft(launch-now)}`;
+  else if (now < eve) t = `Christmas Feast in ${fmtLeft(eve-now)}`;
+  else t = "Merry Catmas!";
+  $("#countBadge").textContent = t;
+}
+countdown(); setInterval(countdown, 30000);
+
+function animateNum(el, to, suffix = "") {
+  const start = performance.now(), dur = 1200;
+  (function f(t){ const p = Math.min(1,(t-start)/dur), e = 1-Math.pow(1-p,3); el.textContent = (suffix===" SOL" ? (to*e).toFixed(2) : fmt(to*e)) + suffix; if (p<1) requestAnimationFrame(f); })(start);
+}
+animateNum($("#mMeals"), CONFIG.meter.meals);
+animateNum($("#mCats"), Math.max(CONFIG.meter.catsFed, CONFIG.fedCats.length));
+animateNum($("#mSol"), CONFIG.meter.solToShelters, " SOL");
+$("#barA").style.width = CONFIG.split.mission + "%"; $("#barB").style.width = CONFIG.split.shelter + "%";
+$("#splitA").textContent = CONFIG.split.mission + "%"; $("#splitB").textContent = CONFIG.split.shelter + "%";
+$("#mathMeals").textContent = fmt(3000 * CONFIG.split.mission/100 * CONFIG.mealsPerDollar) + "+";
+
+/* =========================================================
+   Modal
+   ========================================================= */
+const modal = $("#modal");
+function openModal(html){ $("#mBody").innerHTML = html; modal.classList.add("on"); }
+function closeModal(){ modal.classList.remove("on"); $("#mBody").innerHTML = ""; }
+$("#mClose").addEventListener("click", closeModal);
+modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+/* =========================================================
+   Advent calendar
+   ========================================================= */
+(function advent(){
+  const box = $("#advent"), now = new Date(), y = CONFIG.catmasYear;
+  const lockSvg = `<svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>`;
+  for (let d = 1; d <= 25; d++) {
+    const openAt = new Date(y, 11, d); const open = now >= openAt; const isToday = now.toDateString() === openAt.toDateString();
+    const info = CONFIG.advent[d]; const btn = document.createElement("button");
+    btn.className = "door" + (d===24 ? " big" : "") + (open ? " open" : " locked") + (isToday ? " today" : "");
+    btn.setAttribute("aria-label", `Day ${d}${open ? "" : " (locked)"}`);
+    if (open) {
+      const img = info?.photo || catArt(info?.color || "#f08a3c", d);
+      btn.innerHTML = `<img src="${img}" alt=""><span class="n">${d}</span><span class="st">${esc(info?.cat || "Coming soon")}</span>`;
+      btn.addEventListener("click", () => openModal(`<h3>Day ${d}${d===24?" · Christmas Feast":""}${d===25?" · Merry Catmas":""}</h3><p style="color:var(--muted)">${esc(info ? info.cat : "Today's cat is still on its way.")}</p><img src="${img}" alt=""><p>${esc(info?.note || "Check our X for today's feeding video.")}</p>`));
+    } else {
+      btn.innerHTML = `${lockSvg}<span class="n">${d}</span><span class="st">${d===24 ? "Christmas Eve Feast" : openAt.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span>`;
+      btn.tabIndex = -1;
+    }
+    box.appendChild(btn);
+  }
+})();
+
+/* =========================================================
+   ASMR gallery
+   ========================================================= */
+(function asmr(){
+  const g = $("#asmrGrid");
+  CONFIG.videos.forEach((v, i) => {
+    const el = document.createElement("article"); el.className = "vcard";
+    const poster = v.poster || catArt(v.color, i+2);
+    el.innerHTML = `<div class="vbox"><img src="${poster}" alt=""><span class="vbadge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="2" y="14" width="5" height="7" rx="2"/><rect x="17" y="14" width="5" height="7" rx="2"/></svg>ASMR</span><button class="vplay" aria-label="Play ${esc(v.title)}"><span><svg viewBox="0 0 24 24" fill="#1d1a16"><path d="M7 4l13 8-13 8z"/></svg></span></button></div><div class="vmeta"><b>${esc(v.title)}</b><small>${esc(v.cat)} · ${esc(v.city)}</small></div>`;
+    el.querySelector(".vplay").addEventListener("click", () => {
+      const box = el.querySelector(".vbox");
+      if (v.src) { box.innerHTML = `<video src="${esc(v.src)}" controls autoplay playsinline poster="${poster}"></video>`; box.querySelector("video").play().catch(()=>{}); }
+      else openModal(`<h3>${esc(v.title)}</h3><p style="color:var(--muted)">This ASMR clip drops during Catmas. Follow <a href="https://x.com/${esc(CONFIG.xHandle)}">@${esc(CONFIG.xHandle)}</a> so you don't miss it.</p><img src="${poster}" alt="">`);
+    });
+    g.appendChild(el);
+  });
+})();
+
+/* =========================================================
+   Data backend: Catmas registry API (Vercel) or local preview
+   ========================================================= */
+const API = (CONFIG.apiBase || "") + "/api";
+const Backend = { mode: "local", community: [], latest: 0 };
+function localCards(){ try { return JSON.parse(localStorage.getItem("catmas_cards") || "[]"); } catch { return []; } }
+function saveLocalCards(a){ try { localStorage.setItem("catmas_cards", JSON.stringify(a.slice(-60))); } catch {} }
+function setModeNote(){
+  $("#modeNote").textContent = Backend.mode === "shared"
+    ? "Your number comes from the shared Catmas registry."
+    : "Preview mode: the registry isn't reachable, so numbers are saved in this browser only.";
+  $("#mIdsSub").textContent = Backend.mode === "shared" ? "Made by people like you" : "In this browser (preview)";
+}
+function onCommunity(){ renderDex(); animateNum($("#mIds"), Backend.mode === "shared" ? Backend.latest : Backend.community.length); }
+async function loadCommunity(){
+  try {
+    const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 10000);
+    const r = await fetch(API + "/cards", { signal: ctl.signal }); clearTimeout(t);
+    if (!r.ok) throw new Error("http " + r.status);
+    const j = await r.json();
+    Backend.mode = "shared"; Backend.latest = j.latest || 0; Backend.community = j.cards || [];
+  } catch {
+    Backend.mode = "local"; Backend.community = localCards().slice().reverse();
+  }
+  setModeNote(); onCommunity();
+}
+/* =========================================================
+   Catdex
+   ========================================================= */
+let dexTab = "fed";
+document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".tabs button").forEach(x => x.classList.toggle("on", x === b));
+  dexTab = b.dataset.tab; renderDex();
+}));
+$("#dexSearch").addEventListener("input", renderDex);
+function renderDex(){
+  const q = $("#dexSearch").value.trim().toLowerCase();
+  const list = dexTab === "fed"
+    ? CONFIG.fedCats.map((c,i) => ({ no:c.no, name:c.name, city:c.city, tag:c.tag, img:c.photo || catArt(c.color, i+1) }))
+    : Backend.community.map(c => ({ no:"CM-" + pad(c.no,6), name:c.name, city:c.city, tag:c.type, img:c.thumbUrl || c.thumb, href: c.no && Backend.mode === "shared" ? "/id/" + c.no : "" }));
+  const f = list.filter(c => !q || (c.name + " " + c.city).toLowerCase().includes(q));
+  const d = $("#dex");
+  d.innerHTML = f.length ? f.map(c => `<article class="dcard"${c.href ? ` onclick="location.href='${c.href}'" style="cursor:pointer"` : ""}><div class="ph"><img loading="lazy" src="${c.img && /^(data:image\/|https:\/\/)/.test(c.img) ? esc(c.img) : catArt("#c9a27a", 3)}" alt="${esc(c.name)}"></div><div class="bd"><div class="no">${esc(c.no)}</div><div class="nm">${esc(c.name)}</div><div class="ct">${esc(c.city)}</div>${c.tag?`<span class="tg">${esc(c.tag)}</span>`:""}</div></article>`).join("")
+    : `<div class="empty">${dexTab === "community" ? `No community cats yet. <a href="#cat-id" style="color:var(--red);font-weight:700">Be the first to register yours.</a>` : "No cats match that search."}</div>`;
+  $("#dexNote").textContent = dexTab === "fed" ? "Illustrations are placeholders — real photos of each cat replace them as we feed." : "";
+}
+loadCommunity();
+
+/* =========================================================
+   Cat ID card generator
+   ========================================================= */
+const cv = $("#card"), cx = cv.getContext("2d");
+const PH = { x: 46, y: 160, w: 340, h: 430 };              // photo frame on the card
+const state = { img: null, hat: { x: 0.5, y: 0.2, size: 1, tilt: -12, on: true }, no: null, issued: null };
+const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+
+function roundRect(c, x, y, w, h, r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+
+function drawHat(c, cxp, cyp, size, tiltDeg){
+  const s = 150 * size;
+  c.save(); c.translate(cxp, cyp); c.rotate(tiltDeg * Math.PI/180);
+  c.fillStyle = "#c8332b";
+  c.beginPath(); c.moveTo(-s*0.62, s*0.12); c.quadraticCurveTo(-s*0.35, -s*0.95, s*0.35, -s*0.92); c.quadraticCurveTo(s*0.78, -s*0.86, s*0.88, -s*0.4); c.quadraticCurveTo(s*0.6, -s*0.6, s*0.45, -s*0.35); c.lineTo(s*0.62, s*0.12); c.closePath(); c.fill();
+  c.fillStyle = "rgba(255,255,255,.12)"; c.beginPath(); c.moveTo(-s*0.4,-s*0.05); c.quadraticCurveTo(-s*0.2,-s*0.75,s*0.3,-s*0.8); c.quadraticCurveTo(-s*0.05,-s*0.6,-s*0.2,-s*0.05); c.fill();
+  c.fillStyle = "#fbf3e4"; roundRect(c, -s*0.72, s*0.02, s*1.44, s*0.28, s*0.14); c.fill();
+  c.beginPath(); c.arc(s*0.9, -s*0.4, s*0.17, 0, Math.PI*2); c.fill();
+  c.restore();
+}
+
+function hatPos(){ return { x: PH.x + state.hat.x*PH.w, y: PH.y + state.hat.y*PH.h }; }
+
+function drawCard(){
+  const W = cv.width, H = cv.height;
+  const name = ($("#catName").value.trim() || "Your cat").toUpperCase();
+  const city = ($("#catCity").value.trim() || "City").toUpperCase();
+  const cls = $("#catType").value.toUpperCase();
+  let g = $("#guardian").value.trim(); if (g && !g.startsWith("@")) g = "@" + g;
+  const issued = state.issued || new Date();
+  const us = d => `${pad(d.getMonth()+1,2)}/${pad(d.getDate(),2)}/${d.getFullYear()}`;
+  const idStr = state.no ? "CM-" + pad(state.no, 6) : "CM-000000";
+  const dd = state.no ? String((state.no * 7919 + 104729) % 1e10).padStart(10,"0") : "0000000000";
+
+  // card base
+  cx.clearRect(0,0,W,H);
+  cx.save(); roundRect(cx, 0, 0, W, H, 36); cx.clip();
+  const bg = cx.createLinearGradient(0,0,W,H); bg.addColorStop(0,"#f7f3ea"); bg.addColorStop(.55,"#eef1f4"); bg.addColorStop(1,"#f3e7d3"); cx.fillStyle = bg; cx.fillRect(0,0,W,H);
+  // security guilloche
+  cx.save(); cx.globalAlpha = .09; cx.strokeStyle = "#1f3b63"; cx.lineWidth = 1;
+  for (let i=0;i<34;i++){ cx.beginPath(); for (let x=0;x<=W;x+=10){ const y = 140 + i*18 + Math.sin(x/46 + i*.7)*10 + Math.cos(x/19)*3; x?cx.lineTo(x,y):cx.moveTo(x,y);} cx.stroke(); }
+  cx.restore();
+  // faint snowflakes
+  cx.save(); cx.globalAlpha=.07; cx.strokeStyle="#1f3b63"; cx.lineWidth=3;
+  [[760,300,70],[1080,520,90],[560,640,50]].forEach(([fx,fy,r])=>{ for(let k=0;k<6;k++){ const a=k*Math.PI/3; cx.beginPath(); cx.moveTo(fx,fy); cx.lineTo(fx+Math.cos(a)*r, fy+Math.sin(a)*r); cx.stroke(); } });
+  cx.restore();
+
+  // header
+  const hb = cx.createLinearGradient(0,0,W,0); hb.addColorStop(0,"#13294a"); hb.addColorStop(1,"#1f3b63"); cx.fillStyle = hb; cx.fillRect(0,0,W,118);
+  cx.fillStyle = "#c8332b"; cx.fillRect(0,118,W,8); cx.fillStyle = "#e8b04a"; cx.fillRect(0,126,W,3);
+  cx.textBaseline = "alphabetic"; cx.textAlign = "left";
+  cx.fillStyle = "#fbf3e4"; cx.font = "900 italic 70px Fraunces"; cx.fillText("Catmas", 46, 86);
+  cx.textAlign = "right";
+  cx.fillStyle = "#f6d27e"; cx.font = "700 26px 'DM Sans'"; cx.fillText("CAT IDENTIFICATION CARD", W-150, 58);
+  cx.fillStyle = "#b9c7da"; cx.font = "500 16px 'DM Sans'"; cx.fillText("CATMAS EDITION · NICE LIST", W-150, 88);
+  cx.textAlign = "left";
+  // emblem: cat in a Santa hat
+  cx.save(); cx.translate(W-80, 62);
+  cx.fillStyle="#f08a3c"; cx.beginPath(); cx.moveTo(-26,4); cx.lineTo(-20,-18); cx.lineTo(-6,-6); cx.fill(); cx.beginPath(); cx.moveTo(26,4); cx.lineTo(20,-18); cx.lineTo(6,-6); cx.fill(); cx.beginPath(); cx.ellipse(0,10,27,23,0,0,7); cx.fill();
+  cx.fillStyle="#13294a"; cx.beginPath(); cx.arc(-10,6,3.5,0,7); cx.arc(10,6,3.5,0,7); cx.fill(); cx.restore();
+  drawHat(cx, W-84, 38, 0.32, -14);
+
+  // photo
+  cx.save(); roundRect(cx, PH.x, PH.y, PH.w, PH.h, 12); cx.clip();
+  if (state.img) {
+    const im = state.img, r = Math.max(PH.w/im.width, PH.h/im.height), w = im.width*r, h = im.height*r;
+    cx.drawImage(im, PH.x + (PH.w-w)/2, PH.y + (PH.h-h)/2, w, h);
+  } else {
+    const gg = cx.createLinearGradient(0,PH.y,0,PH.y+PH.h); gg.addColorStop(0,"#2a4670"); gg.addColorStop(1,"#13294a"); cx.fillStyle = gg; cx.fillRect(PH.x,PH.y,PH.w,PH.h);
+    const mx = PH.x+PH.w/2, my = PH.y+PH.h/2-30;
+    cx.fillStyle="#f08a3c"; cx.beginPath(); cx.ellipse(mx, my, 78, 68, 0, 0, 7); cx.fill();
+    cx.beginPath(); cx.moveTo(mx-68,my-30); cx.lineTo(mx-54,my-100); cx.lineTo(mx-14,my-60); cx.fill(); cx.beginPath(); cx.moveTo(mx+68,my-30); cx.lineTo(mx+54,my-100); cx.lineTo(mx+14,my-60); cx.fill();
+    cx.fillStyle="rgba(251,243,228,.85)"; cx.font="700 24px 'DM Sans'"; cx.textAlign="center"; cx.fillText("Your cat's photo", mx, PH.y+PH.h-70); cx.textAlign="left";
+  }
+  cx.restore();
+  cx.strokeStyle = "rgba(19,41,74,.35)"; cx.lineWidth = 2; roundRect(cx, PH.x, PH.y, PH.w, PH.h, 12); cx.stroke();
+  if (state.hat.on) { const p = hatPos(); drawHat(cx, p.x, p.y, state.hat.size, state.hat.tilt); }
+
+  // signature under photo
+  cx.fillStyle = "#13294a"; cx.font = "600 italic 34px Fraunces";
+  let sig = name.charAt(0) + name.slice(1).toLowerCase(); while (cx.measureText(sig).width > PH.w - 60 && sig.length > 3) sig = sig.slice(0,-2);
+  cx.fillText(sig, PH.x + 6, PH.y + PH.h + 52);
+  // paw print as signature mark
+  cx.save(); cx.fillStyle = "#c8332b"; const px = PH.x + PH.w - 26, py = PH.y + PH.h + 42, r = 11;
+  cx.beginPath(); cx.ellipse(px,py,r,r*.85,0,0,7); cx.fill(); [[-1.1,-1.15],[-.4,-1.6],[.4,-1.6],[1.1,-1.15]].forEach(([a,b])=>{cx.beginPath();cx.ellipse(px+a*r,py+b*r,r*.33,r*.4,0,0,7);cx.fill();}); cx.restore();
+
+  // fields — US license style with numbered field codes
+  const X = PH.x + PH.w + 40, X2 = X + 260, X3 = X + 470;
+  const field = (code, label, value, x, y, opt = {}) => {
+    cx.fillStyle = "#c8332b"; cx.font = "700 15px 'DM Sans'"; cx.fillText(code, x, y);
+    const cw = cx.measureText(code).width + 6;
+    cx.fillStyle = "#5d6b80"; cx.font = "700 15px 'DM Sans'"; cx.fillText(label, x + cw, y);
+    cx.fillStyle = opt.color || "#13294a"; cx.font = opt.font || "700 30px 'DM Sans'";
+    let v = value; const maxW = opt.maxW || 240; while (cx.measureText(v).width > maxW && v.length > 3) v = v.slice(0,-2) + "…";
+    cx.fillText(v, x, y + (opt.dy || 34));
+  };
+  field("4d", "CID", idStr, X, 182, { font: "700 50px 'JetBrains Mono'", color: state.no ? "#c8332b" : "#9aa6b6", dy: 52, maxW: 520 });
+  field("1", "NAME", name, X, 282, { font: "900 46px Fraunces", dy: 48, maxW: 640 });
+  field("8", "CITY", city, X, 376, { maxW: 640 });
+  field("4a", "ISS", us(issued), X, 452);
+  field("4b", "EXP", "NEVER", X2, 452);
+  field("9", "CLASS", cls, X3, 452, { maxW: 200 });
+  field("12", "RESTR", "TREATS REQ.", X, 528);
+  field("9a", "END", "NICE LIST", X2, 528);
+  field("16", "HGT", "1 LOAF", X3, 528, { maxW: 200 });
+  field("", "GUARDIAN", g ? g.toUpperCase() : "THE STREETS", X, 604, { maxW: 420 });
+  field("5", "DD", dd, X3 - 40, 604, { font: "700 22px 'JetBrains Mono'", maxW: 240 });
+
+  // ghost image (like real IDs)
+  if (state.img) {
+    const gx = W - 150, gy = 318, gw = 110, gh = 140;
+    cx.save(); cx.globalAlpha = .22; cx.filter = "grayscale(1) contrast(1.2)";
+    roundRect(cx, gx, gy, gw, gh, 8); cx.clip();
+    const im = state.img, rr = Math.max(gw/im.width, gh/im.height); cx.drawImage(im, gx + (gw-im.width*rr)/2, gy + (gh-im.height*rr)/2, im.width*rr, im.height*rr);
+    cx.restore(); cx.filter = "none";
+  }
+
+  // barcode strip (PDF417-style blocks)
+  const bx = X, by = 664, bw = W - X - 46, bh = 44;
+  let seed = (state.no || 7) * 9301 + 49297; cx.fillStyle = "#13294a";
+  for (let row = 0; row < 4; row++) for (let x = bx; x < bx + bw; ) { seed = (seed*9301+49297) % 233280; const w = 2 + (seed % 5)*1.5; if (seed % 3) cx.fillRect(x, by + row*(bh/4), w, bh/4 - 1); x += w + 1.5; }
+
+  // footer
+  cx.fillStyle = "#5d6b80"; cx.font = "500 14px 'DM Sans'";
+  cx.fillText("NOVELTY ITEM · NOT A GOVERNMENT-ISSUED ID · " + (CONFIG.siteUrl||"").replace(/^https?:\/\//,"").toUpperCase() + " · #CATMAS", 46, H - 24);
+  const hg = cx.createLinearGradient(0,0,W,0); ["#f6d27e","#f5a3c7","#9fd3f0","#b5f0c0","#f6d27e"].forEach((c,i,a)=>hg.addColorStop(i/(a.length-1),c));
+  cx.globalAlpha=.5; cx.fillStyle=hg; cx.fillRect(0, H-10, W, 10); cx.globalAlpha=1;
+
+  // holographic seal when registered
+  if (state.no) {
+    const sx = PH.x + PH.w - 18, sy = PH.y + PH.h - 30;
+    cx.save(); cx.globalAlpha = .82;
+    const sg = cx.createRadialGradient(sx-10, sy-10, 5, sx, sy, 62); sg.addColorStop(0,"#fff6d6"); sg.addColorStop(.5,"#f6d27e"); sg.addColorStop(1,"#c99a3a");
+    cx.fillStyle = sg; cx.beginPath(); for (let k=0;k<24;k++){ const a=k*Math.PI/12, rr = k%2?56:62; cx.lineTo(sx+Math.cos(a)*rr, sy+Math.sin(a)*rr); } cx.closePath(); cx.fill();
+    cx.globalAlpha = 1; cx.fillStyle = "#7a1c16"; cx.textAlign = "center";
+    cx.font = "900 15px 'DM Sans'"; cx.fillText("CATMAS", sx, sy - 6); cx.font = "900 22px 'DM Sans'"; cx.fillText(String(issued.getFullYear()), sx, sy + 18);
+    cx.textAlign = "left"; cx.restore();
+  }
+  cx.restore();
+}
+fontsReady.then(drawCard); drawCard();
+
+// inputs
+["catName","catCity","catType","guardian"].forEach(id => $("#"+id).addEventListener("input", () => { if (state.no) resetNumber(); drawCard(); }));
+$("#hatOn").addEventListener("change", e => { state.hat.on = e.target.checked; $("#hatControls").style.display = e.target.checked ? "" : "none"; drawCard(); });
+const syncHat = () => { state.hat.size = $("#hatSize").value/100; state.hat.tilt = +$("#hatTilt").value; $("#hsV").textContent = $("#hatSize").value + "%"; $("#htV").textContent = $("#hatTilt").value + "°"; drawCard(); };
+$("#hatSize").addEventListener("input", syncHat); $("#hatTilt").addEventListener("input", syncHat); syncHat();
+
+// photo upload
+const drop = $("#drop"), fileIn = $("#photo");
+drop.addEventListener("click", () => fileIn.click());
+drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileIn.click(); } });
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => { const f = e.dataTransfer.files?.[0]; if (f) loadPhoto(f); });
+fileIn.addEventListener("change", () => { const f = fileIn.files?.[0]; if (f) loadPhoto(f); });
+function loadPhoto(f){
+  if (!f.type.startsWith("image/")) { setStatus("That file isn't an image.", true); return; }
+  const url = URL.createObjectURL(f); const im = new Image();
+  im.onload = () => { state.img = im; if (state.no) resetNumber(); drop.querySelector("b").textContent = "Photo added — tap to change"; setStatus(""); drawCard(); };
+  im.onerror = () => setStatus("Couldn't read that photo. Try a JPG or PNG.", true);
+  im.src = url;
+}
+
+// drag the hat
+let dragging = false;
+function canvasPoint(e){ const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * cv.width / r.width, y: (e.clientY - r.top) * cv.height / r.height }; }
+cv.addEventListener("pointerdown", e => { if (!state.hat.on) return; const p = canvasPoint(e), h = hatPos(); if (Math.hypot(p.x-h.x, p.y-h.y) < 170*state.hat.size || (p.x>PH.x && p.x<PH.x+PH.w && p.y>PH.y && p.y<PH.y+PH.h)) { dragging = true; cv.setPointerCapture(e.pointerId); cv.style.cursor="grabbing"; move(e); } });
+cv.addEventListener("pointermove", e => dragging && move(e));
+cv.addEventListener("pointerup", () => { dragging = false; cv.style.cursor="grab"; });
+function move(e){ const p = canvasPoint(e); state.hat.x = Math.min(1.1, Math.max(-0.1, (p.x - PH.x)/PH.w)); state.hat.y = Math.min(1, Math.max(-0.15, (p.y - PH.y)/PH.h)); drawCard(); }
+
+function setStatus(t, err){ const s = $("#status"); s.textContent = t; s.classList.toggle("err", !!err); }
+function resetNumber(){ state.no = null; state.issued = null; $("#cardActions").hidden = true; $("#shareTip").hidden = true; $("#genBtn").disabled = false; $("#genBtn").textContent = "Register & get my number"; }
+
+function makeThumb(){
+  const t = document.createElement("canvas"); t.width = 240; t.height = 300; const c = t.getContext("2d");
+  if (state.img) { const im = state.img, r = Math.max(240/im.width, 300/im.height); c.drawImage(im, (240-im.width*r)/2, (300-im.height*r)/2, im.width*r, im.height*r); }
+  if (state.hat.on) drawHat(c, state.hat.x*240, state.hat.y*300, state.hat.size*0.6, state.hat.tilt);
+  return t.toDataURL("image/jpeg", 0.72);
+}
+const cardBlob = () => new Promise(r => cv.toBlob(r, "image/jpeg", 0.9));
+
+$("#genForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if ($("#website").value) return; // honeypot
+  const name = $("#catName").value.trim(), city = $("#catCity").value.trim();
+  if (!state.img) return setStatus("Add a photo of your cat first.", true);
+  if (!name) return setStatus("Give your cat a name.", true);
+  if (!city) return setStatus("Which city does your cat live in?", true);
+  const btn = $("#genBtn"); btn.disabled = true; btn.textContent = "Registering…"; setStatus("");
+  let g = $("#guardian").value.trim(); if (g && !g.startsWith("@")) g = "@" + g;
+  const rec = { name: name.slice(0,22), city: city.slice(0,24), type: $("#catType").value, guardian: g.slice(0,21), thumb: makeThumb() };
+  let shareUrl = location.origin + "/#cat-id";
+  try {
+    let n;
+    try {
+      const r = await fetch(API + "/register", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(rec) });
+      const j = await r.json().catch(() => ({}));
+      if (r.status === 429) throw Object.assign(new Error("slow"), { user: "Too many cards from your connection — try again in a minute." });
+      if (r.status === 400) throw Object.assign(new Error("bad"), { user: j.error || "Please check the name and city." });
+      if (!r.ok || !j.no) throw new Error("api");
+      n = j.no; state.no = n; state.issued = new Date(); drawCard();
+      shareUrl = j.shareUrl || (location.origin + "/id/" + n);
+      // upload the finished card so the share link shows it as a preview on X
+      const blob = await cardBlob();
+      await fetch(`${API}/card-image?no=${n}&token=${encodeURIComponent(j.token)}`, { method: "POST", headers: { "content-type": "application/octet-stream" }, body: blob }).catch(() => {});
+      Backend.mode = "shared";
+      loadCommunity();
+    } catch (err) {
+      if (err.user) throw err;
+      // registry unreachable → local preview numbering
+      Backend.mode = "local"; setModeNote();
+      let c = 0; try { c = parseInt(localStorage.getItem("catmas_counter") || "0", 10) || 0; } catch {}
+      n = c + 1; try { localStorage.setItem("catmas_counter", String(n)); } catch {}
+      state.no = n; state.issued = new Date(); drawCard();
+      const a = localCards(); a.push({ ...rec, no: n }); saveLocalCards(a); Backend.community = a.slice().reverse(); onCommunity();
+    }
+    const id = "CM-" + pad(n, 6);
+    btn.textContent = "Registered ✓";
+    setStatus(`${name} is now ${id}. Welcome to the Catmas registry!`);
+    const text = `Meet ${name}, official Catmas Cat ID ${id} from ${city} 🐾🎄\n\nGive your cat an ID too:`;
+    $("#xBtn").href = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(shareUrl) + "&hashtags=Catmas" + (CONFIG.xHandle ? "&via=" + encodeURIComponent(CONFIG.xHandle) : "");
+    $("#copyTxt").dataset.text = `${text} ${shareUrl} #Catmas`;
+    $("#shareTip").textContent = Backend.mode === "shared"
+      ? "Your card shows up as the preview image when you share the link on X. You can also download it."
+      : "Tip: download the card first, then attach it to your X post.";
+    $("#cardActions").hidden = false; $("#shareTip").hidden = false;
+  } catch (err) {
+    btn.disabled = false; btn.textContent = "Register & get my number";
+    setStatus(err.user || "Something went wrong — please try again.", true);
+  }
+});
+
+$("#dlBtn").addEventListener("click", async () => {
+  const fname = `catmas-id-CM-${pad(state.no||0,6)}.jpg`;
+  const blob = await cardBlob();
+  try { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fname; document.body.appendChild(a); a.click(); a.remove(); setStatus("Card downloaded. Now share it on X!"); }
+  catch { openModal(`<h3>Your Cat ID</h3><p style="color:var(--muted)">Press and hold (or right-click) the card and choose "Save image".</p><img src="${cv.toDataURL("image/jpeg",0.9)}" alt="Cat ID card">`); }
+});
+$("#copyTxt").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("#copyTxt").dataset.text); $("#copyTxt").textContent = "Copied ✓"; } catch { $("#copyTxt").textContent = "Copy failed"; } setTimeout(()=>$("#copyTxt").textContent="Copy post text",1600); });
+$("#newBtn").addEventListener("click", () => { state.img = null; fileIn.value = ""; ["catName","catCity","guardian"].forEach(id => $("#"+id).value = ""); drop.querySelector("b").textContent = "Drop a photo or tap to choose"; state.hat.x = .5; state.hat.y = .2; resetNumber(); setStatus(""); drawCard(); $("#cat-id").scrollIntoView({behavior:"smooth"}); });
+
+/* =========================================================
+   Receipts, roadmap, footer
+   ========================================================= */
+$("#receiptList").innerHTML = CONFIG.receipts.length
+  ? CONFIG.receipts.map(r => `<div class="rc"><span class="d">${esc(r.date)}</span><div><b>${esc(r.title)}</b><small>${esc(r.detail)}</small></div>${r.tx?`<a class="btn btn-ghost btn-sm" href="${esc(r.tx)}" target="_blank" rel="noopener">View on-chain</a>`:""}</div>`).join("")
+  : `<div class="rc"><span class="d">Mon, Dec 7</span><div><b>First weekly report</b><small>Our first withdrawal, receipts and feeding videos land here one week after launch.</small></div></div>`;
+$("#road").innerHTML = CONFIG.roadmap.map((m,i) => `<div class="mile${m.done?" done":""}"><div class="pin">${i+1}</div><b>${esc(m.t)}</b><small>${esc(m.d)}</small></div>`).join("");
+$("#footLinks").innerHTML = [ CONFIG.xHandle && `<a href="https://x.com/${esc(CONFIG.xHandle)}">X @${esc(CONFIG.xHandle)}</a>`, CONFIG.tiktok && `<a href="${esc(CONFIG.tiktok)}">TikTok</a>`, CONFIG.instagram && `<a href="${esc(CONFIG.instagram)}">Instagram</a>` ].filter(Boolean).join(" · ");
+</script>
+</body>
+</html>
