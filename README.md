@@ -24,7 +24,7 @@
 
 1. In `public/config.js` set `ca`, `pumpUrl`, `xHandle`, and confirm `launchAt`.
 2. Replace placeholder art: put photos/videos in `public/media/` and reference them in `config.js` (strip GPS/EXIF first).
-3. Connect a custom domain in Vercel → Project → Domains.
+3. Connect a custom domain in Vercel → Project → Domains, then replace `https://catmas.vercel.app` in the `og:image`, `twitter:image` and `og:url` tags at the top of `public/index.html`.
 4. Add a Firewall rate-limit rule for `/api/register` (e.g. 10 requests / minute / IP) in Vercel → Firewall.
 5. Push to `main` — Vercel deploys automatically.
 
